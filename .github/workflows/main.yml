@@ -6,7 +6,8 @@ on:
   workflow_dispatch:  # This allows the workflow to be manually triggered
 
 env:
-  NAME: gnu-wget
+  NAME: repo-name-here
+  URL: repo-url-here
 
 jobs:
   sync-repo:
@@ -23,9 +24,9 @@ jobs:
         git config user.name "GitHub Actions"
         git config user.email "actions@github.com"
 
-    - name: Add ${{ env.NAME }} remote and fetch all branches and tags
+    - name: Add remote and fetch all branches and tags
       run: |
-        git remote add ${{ env.NAME }} https://gitlab.com/gnuwget/wget2.git
+        git remote add ${{ env.NAME }} ${{ env.URL }}
         git fetch ${{ env.NAME }} --tags
         git fetch ${{ env.NAME }} '+refs/heads/*:refs/remotes/${{ env.NAME }}/*'
 
