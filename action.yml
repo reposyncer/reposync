@@ -19,12 +19,14 @@ runs:
       run: |
         git config user.name "GitHub Actions"
         git config user.email "actions@github.com"
+      shell: bash
 
     - name: Add remote fetch branches/tags
       run: |
         git remote add ${{ inputs.name }} ${{ inputs.url }}
         git fetch ${{ inputs.name }} --tags
         git fetch ${{ inputs.name }} '+refs/heads/*:refs/remotes/${{ inputs.name }}/*'
+      shell: bash
 
     - name: Push branches and tags
       run: |
@@ -42,3 +44,4 @@ runs:
             git push origin $tag --force
           fi
         done
+      shell: bash
