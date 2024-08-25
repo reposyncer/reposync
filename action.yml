@@ -1,7 +1,5 @@
 name: 'Repository-Syncer'
 description: 'An action to sync all branches and tags from a remote repository efficiently.'
-icon: 'arrow-down-left'
-color: 'dark-gray'
 inputs:
   name:
     description: 'The name of the remote repository'
