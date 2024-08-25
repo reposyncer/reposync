@@ -1,0 +1,44 @@
+name: 'Sync Repository'
+description: 'An action to sync all branches and tags from a remote repository efficiently.'
+inputs:
+  name:
+    description: 'The name of the remote repository'
+    required: true
+  url:
+    description: 'The URL of the remote repository'
+    required: true
+runs:
+  using: 'composite'
+  steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+
+    - name: Set Git Configurations
+      run: |
+        git config user.name "GitHub Actions"
+        git config user.email "actions@github.com"
+
+    - name: Add remote and fetch all branches and tags
+      run: |
+        git remote add ${{ inputs.name }} ${{ inputs.url }}
+        git fetch ${{ inputs.name }} --tags
+        git fetch ${{ inputs.name }} '+refs/heads/*:refs/remotes/${{ inputs.name }}/*'
+
+    - name: Push only changed branches and tags to origin
+      run: |
+        for branch in $(git branch -r | grep '${{ inputs.name }}/' | sed 's/${{ inputs.name }}\///'); do
+          LOCAL_SHA=$(git rev-parse refs/remotes/origin/$branch || echo "")
+          REMOTE_SHA=$(git rev-parse refs/remotes/${{ inputs.name }}/$branch)
+          if [ "$LOCAL_SHA" != "$REMOTE_SHA" ]; then
+            git push origin ${{ inputs.name }}/$branch:refs/heads/$branch --force
+          fi
+        done
+        for tag in $(git tag -l); do
+          LOCAL_SHA=$(git rev-parse refs/tags/$tag || echo "")
+          REMOTE_SHA=$(git rev-parse refs/remotes/${{ inputs.name }}/tags/$tag)
+          if [ "$LOCAL_SHA" != "$REMOTE_SHA" ]; then
+            git push origin $tag --force
+          fi
+        done
