@@ -1,6 +1,6 @@
 name: 'Remote Repository Sync'
 description: 'A GitHub Action to sync repositories with a remote source'
-author: 'Your Name'
+author: 'Repo Syncer'
 inputs:
   name:
     description: 'The name of the remote repository'
