@@ -1,9 +1,5 @@
-# clone
-TEMPLATE for cloning and making mirrors
+# Repo Sync
+Github action for creating Github mirrors from remote repositories.
 
 ## Usage
-To use the `clone` template:
-
-1. Use the template.
-2. Change the `env` variables in [`.github/workflows/main.yml`](.github/workflows/main.yml) to the desired variables.
-3. You are done!
+n
