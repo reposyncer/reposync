@@ -1,4 +1,4 @@
-name: 'Sync Repository'
+name: 'Repo Sync'
 description: 'An action to sync all branches and tags from a remote repository efficiently.'
 inputs:
   name:
@@ -20,13 +20,13 @@ runs:
         git config user.name "GitHub Actions"
         git config user.email "actions@github.com"
 
-    - name: Add remote and fetch all branches and tags
+    - name: Add remote fetch branches/tags
       run: |
         git remote add ${{ inputs.name }} ${{ inputs.url }}
         git fetch ${{ inputs.name }} --tags
         git fetch ${{ inputs.name }} '+refs/heads/*:refs/remotes/${{ inputs.name }}/*'
 
-    - name: Push only changed branches and tags to origin
+    - name: Push branches and tags
       run: |
         for branch in $(git branch -r | grep '${{ inputs.name }}/' | sed 's/${{ inputs.name }}\///'); do
           LOCAL_SHA=$(git rev-parse refs/remotes/origin/$branch || echo "")
