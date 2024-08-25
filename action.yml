@@ -1,4 +1,4 @@
-name: 'Repo Sync'
+name: 'Repository Sync'
 description: 'An action to sync all branches and tags from a remote repository efficiently.'
 inputs:
   name:
