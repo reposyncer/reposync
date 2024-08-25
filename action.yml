@@ -1,5 +1,6 @@
-name: 'Repository-Syncer'
-description: 'An action to sync all branches and tags from a remote repository efficiently.'
+name: 'Repository-Sync'
+description: 'A GitHub Action to sync repositories with a remote source'
+author: 'Your Name'
 inputs:
   name:
     description: 'The name of the remote repository'
@@ -19,29 +20,20 @@ runs:
       run: |
         git config user.name "GitHub Actions"
         git config user.email "actions@github.com"
-      shell: bash
 
-    - name: Add remote fetch branches/tags
+    - name: Add remote and fetch all branches and tags
       run: |
         git remote add ${{ inputs.name }} ${{ inputs.url }}
-        git fetch ${{ inputs.name }} --tags --prune
+        git fetch ${{ inputs.name }} --tags
         git fetch ${{ inputs.name }} '+refs/heads/*:refs/remotes/${{ inputs.name }}/*'
-      shell: bash
 
-    - name: Push branches and tags
+    - name: Push all branches and tags to origin
       run: |
         for branch in $(git branch -r | grep '${{ inputs.name }}/' | sed 's/${{ inputs.name }}\///'); do
-          LOCAL_SHA=$(git rev-parse refs/remotes/origin/$branch || echo "")
-          REMOTE_SHA=$(git rev-parse refs/remotes/${{ inputs.name }}/$branch)
-          if [ "$LOCAL_SHA" != "$REMOTE_SHA" ]; then
-            git push origin ${{ inputs.name }}/$branch:refs/heads/$branch --force
-          fi
+          git push origin ${{ inputs.name }}/$branch:refs/heads/$branch --force
         done
-        for tag in $(git ls-remote --tags ${{ inputs.name }} | awk '{print $2}' | sed 's#refs/tags/##'); do
-          LOCAL_SHA=$(git rev-parse refs/tags/$tag || echo "")
-          REMOTE_SHA=$(git rev-parse refs/tags/$tag)
-          if [ "$LOCAL_SHA" != "$REMOTE_SHA" ]; then
-            git push origin $tag --force
-          fi
-        done
-      shell: bash
+        git push --tags --force
+
+branding:
+  icon: 'refresh-cw'
+  color: 'blue'
